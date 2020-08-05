@@ -328,18 +328,31 @@ class InfluxDBClient(object):
         _try = 0
         while retry:
             try:
-                response = self._session.request(
-                    method=method,
-                    url=url,
-                    auth=(self._username, self._password),
-                    params=params,
-                    data=data,
-                    stream=stream,
-                    headers=headers,
-                    proxies=self._proxies,
-                    verify=self._verify_ssl,
-                    timeout=self._timeout
-                )
+                if 'Authorization' in self._headers:
+                    response = self._session.request(
+                        method=method,
+                        url=url,
+                        params=params,
+                        data=data,
+                        stream=stream,
+                        headers=headers,
+                        proxies=self._proxies,
+                        verify=self._verify_ssl,
+                        timeout=self._timeout
+                    )
+                else:
+                    response = self._session.request(
+                        method=method,
+                        url=url,
+                        auth=(self._username, self._password),
+                        params=params,
+                        data=data,
+                        stream=stream,
+                        headers=headers,
+                        proxies=self._proxies,
+                        verify=self._verify_ssl,
+                        timeout=self._timeout
+                    )
                 break
             except (requests.exceptions.ConnectionError,
                     requests.exceptions.HTTPError,
